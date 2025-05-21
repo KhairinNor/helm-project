@@ -16,6 +16,8 @@ spec:
         - name: frontend
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          command: {{ .Values.frontend.commandOverride | toJson }}
+          args: {{ .Values.frontend.argsOverride | toJson }}
           ports:
             - containerPort: 80
           livenessProbe:
@@ -32,4 +34,3 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
             failureThreshold: 3
-
