@@ -1,17 +1,6 @@
-name: Helm Deploy with Rollback
-
-on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Deployment environment (currently unused)'
-        required: false
-        default: 'dev'
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -26,27 +15,26 @@ jobs:
         with:
           version: v1.28.0
 
-      - name: Load kubeconfig from secret
+      - name: Load kubeconfig
         run: |
           mkdir -p ~/.kube
           echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > ~/.kube/config
 
-      - name: Helm Deploy with Rollback Handling
-        run: |
-          echo "🚀 Starting Helm deployment..."
-          
-          helm upgrade --install webapp-release ./webapp \
-            --atomic --wait --debug \
-            --kubeconfig ~/.kube/config
-          
-          echo "{\"timestamp\":\"$(date)\", \"event\":\"success\"}" >> /tmp/deployment_history.json
-          echo "✅ Helm deployment succeeded."
+      - name: Run Helm Deploy Script
+        run: bash ./deploy_with_alert.sh
+        continue-on-error: true
 
-        continue-on-error: true  # Allow next step to handle failure logging
-
-      - name: Handle Rollback Logging if Failed
+      - name: Send Rollback Email (CI)
         if: failure()
-        run: |
-          echo "🚨 Helm deployment failed and rolled back!"
-          echo "{\"timestamp\":\"$(date)\", \"event\":\"rollback\"}" >> /tmp/deployment_history.json
-
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: 🚨 Helm Rollback Alert
+          to: mdkhairin1999@gmail.com
+          from: mdkhairin1999@gmail.com
+          body: |
+            Helm deployment failed and was rolled back.
+            Timestamp: ${{ github.run_started_at }}
