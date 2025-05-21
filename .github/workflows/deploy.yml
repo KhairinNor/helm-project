@@ -1,6 +1,12 @@
+name: Helm Deploy with Rollback
+
+on:
+  workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -15,7 +21,7 @@ jobs:
         with:
           version: v1.28.0
 
-      - name: Load kubeconfig
+      - name: Load kubeconfig from secret
         run: |
           mkdir -p ~/.kube
           echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > ~/.kube/config
