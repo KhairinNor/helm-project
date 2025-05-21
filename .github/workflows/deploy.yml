@@ -27,11 +27,14 @@ jobs:
           echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > ~/.kube/config
 
       - name: Run Helm Deploy Script
-        run: bash ./deploy_with_alert.sh
+        id: deploy_step
+        run: |
+          echo "🚀 Starting Helm deployment..."
+          bash ./deploy_with_alert.sh || echo "DEPLOY_FAILED=true" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Send Rollback Email (CI)
-        if: failure()
+        if: env.DEPLOY_FAILED == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
