@@ -1,0 +1,17 @@
+frontend:
+  image:
+    repository: muhdkhairin07/helm-finance-frontend
+    tag: v4
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+
+backend:
+  image:
+    repository: nginx
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80

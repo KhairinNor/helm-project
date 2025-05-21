@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-backend-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp-backend-svc
+  template:
+    metadata:
+      labels:
+        app: webapp-backend-svc
+    spec:
+      containers:
+        - name: dummy-backend
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          ports:
+            - containerPort: 80
