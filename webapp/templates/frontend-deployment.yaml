@@ -17,5 +17,5 @@ spec:
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports:
-            - containerPort: 80
+            - containerPort: 
           invalid_field: true  # ❌ This line is invalid and will break the chart
