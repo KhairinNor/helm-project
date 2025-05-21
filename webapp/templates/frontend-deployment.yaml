@@ -16,6 +16,7 @@ spec:
         - name: frontend
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          command: {{ .Values.frontend.commandOverride | toJson }}
+          args: {{ .Values.frontend.argsOverride | toJson }}
           ports:
-            - containerPort: 
-          invalid_field: true  # ❌ This line is invalid and will break the chart
+            - containerPort: 80
