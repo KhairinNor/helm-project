@@ -2,13 +2,18 @@ name: Helm Deploy with Rollback
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment (currently unused)'
+        required: false
+        default: 'dev'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Helm
@@ -21,12 +26,27 @@ jobs:
         with:
           version: v1.28.0
 
-      - name: Load kubeconfig
+      - name: Load kubeconfig from secret
         run: |
           mkdir -p ~/.kube
           echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > ~/.kube/config
 
-      - name: Run deployment script
-        run: bash ./deploy_with_alert.sh
-        env:
-          KUBECONFIG: ${{ github.workspace }}/.kube/config
+      - name: Helm Deploy with Rollback Handling
+        run: |
+          echo "🚀 Starting Helm deployment..."
+          
+          helm upgrade --install webapp-release ./webapp \
+            --atomic --wait --debug \
+            --kubeconfig ~/.kube/config
+          
+          echo "{\"timestamp\":\"$(date)\", \"event\":\"success\"}" >> /tmp/deployment_history.json
+          echo "✅ Helm deployment succeeded."
+
+        continue-on-error: true  # Allow next step to handle failure logging
+
+      - name: Handle Rollback Logging if Failed
+        if: failure()
+        run: |
+          echo "🚨 Helm deployment failed and rolled back!"
+          echo "{\"timestamp\":\"$(date)\", \"event\":\"rollback\"}" >> /tmp/deployment_history.json
+
