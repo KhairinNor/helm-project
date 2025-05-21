@@ -18,4 +18,4 @@ spec:
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports:
             - containerPort: 80
-          invalid_field: true
+          invalid_field: true  # ❌ This line is invalid and will break the chart
