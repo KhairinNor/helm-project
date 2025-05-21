@@ -1,10 +1,8 @@
 frontend:
   image:
-    repository: nginx
-    tag: latest
+    repository: muhdkhairin07/helm-finance-frontend
+    tag: v3
     pullPolicy: IfNotPresent
-  commandOverride: ["/bin/sh"]
-  argsOverride: ["-c", "sleep 20 && exit 1"]
   service:
     type: ClusterIP
     port: 80

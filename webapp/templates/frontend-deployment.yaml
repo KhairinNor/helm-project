@@ -16,21 +16,19 @@ spec:
         - name: frontend
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
-          command: {{ .Values.frontend.commandOverride | toJson }}
-          args: {{ .Values.frontend.argsOverride | toJson }}
           ports:
             - containerPort: 80
           livenessProbe:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 40
+            initialDelaySeconds: 10
             periodSeconds: 5
             failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /
               port: 80
-            initialDelaySeconds: 30
+            initialDelaySeconds: 5
             periodSeconds: 5
             failureThreshold: 3
