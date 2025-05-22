@@ -1,10 +1,10 @@
 FROM nginx:alpine
 
-# Remove default config and replace with ours
+# Replace default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/default.conf /etc/nginx/conf.d/
 
-# Copy built static files
+# Copy built frontend (Vue/React) files
 COPY dist/ /usr/share/nginx/html/
 
 EXPOSE 80
