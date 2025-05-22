@@ -4,7 +4,6 @@ metadata:
   name: {{ include "webapp.fullname" . }}-frontend
 spec:
   replicas: 1
-  invalid_field: true   # ❌ This is invalid
   selector:
     matchLabels:
       app: {{ include "webapp.name" . }}-frontend
@@ -18,7 +17,7 @@ spec:
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports:
-            - containerPort: 80
+            - containerPort: invalidport
           livenessProbe:
             httpGet:
               path: /
