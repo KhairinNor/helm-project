@@ -1,7 +1,7 @@
 frontend:
   image:
     repository: muhdkhairin07/helm-finance-frontend
-    tag: brokentag
+    tag: v8
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP

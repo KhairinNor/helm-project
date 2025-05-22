@@ -4,6 +4,7 @@ metadata:
   name: {{ include "webapp.fullname" . }}-frontend
 spec:
   replicas: 1
+  invalid_field: true   # ❌ This is invalid
   selector:
     matchLabels:
       app: {{ include "webapp.name" . }}-frontend
