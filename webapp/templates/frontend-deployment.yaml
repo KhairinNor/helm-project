@@ -17,7 +17,7 @@ spec:
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports:
-            - containerPort: invalidport
+            - containerPort: 80
           livenessProbe:
             httpGet:
               path: /
